@@ -1,6 +1,11 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shop/models/product.dart';
 import 'package:shop/widgets/drawer.dart';
+
 
 class ProductFormPage extends StatefulWidget {
   
@@ -15,6 +20,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
  final _descriptionFocus = FocusNode();
  final _imageUrlFocus = FocusNode();
  final _imageController = TextEditingController(); 
+
+ final _formKey = GlobalKey<FormState>();
+
+ final _formData = Map<String,Object>();
  
  
   
@@ -34,7 +43,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
  
   void submitedForm(){
-    print('Formulário submetido');
+    final isValid =_formKey.currentState?.validate() ?? false;
+
+    if(!isValid){
+      return print('Formulário inválido');
+    }
+
+    _formKey.currentState?.save();
+    final newProduct = Product(
+      name: _formData['name'], 
+      id: Random().nextDouble().toString(), 
+      description: _formData['description'], 
+      price: _formData['price'] as double, 
+      imageUrl: _formData['urlImage']);
+
+    print(newProduct.name);
+    print(newProduct.id);
+    print(newProduct.description);
+    print(newProduct.price);
+    print(newProduct.imageUrl);
   }
 
   @override
@@ -54,14 +81,24 @@ class _ProductFormPageState extends State<ProductFormPage> {
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
+          key:  _formKey,
           child: ListView(
         children: [
           TextFormField(
+            validator: (name){
+              if(name.trim().isEmpty){
+                return 'Coloque um nome';
+              }if(name.trim().length <= 3){
+                return 'Tamanho curto';
+              }
+              return null;
+            },
             decoration: InputDecoration(labelText: 'Nome'),
             textInputAction: TextInputAction.next,
             onFieldSubmitted: (_) {
               FocusScope.of(context).requestFocus(_priceFocus);
             },
+            onSaved: (name) => _formData['name'] = name ?? '',
           ),
           TextFormField(
             decoration: InputDecoration(labelText: 'Preço'),
@@ -71,6 +108,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             onFieldSubmitted: (_) {
               FocusScope.of(context).requestFocus(_descriptionFocus);
             },
+            onSaved: (price) => _formData['price'] = double.parse(price ?? '0'),
           ),
            TextFormField(
             decoration: InputDecoration(labelText: 'Descrição'),
@@ -78,6 +116,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             keyboardType: TextInputType.multiline,
             maxLines: 3,
             focusNode: _descriptionFocus,
+            onSaved: (description) => _formData['description'] = description ?? '',
           ),
           SizedBox(height: 15),
           Row(
@@ -86,11 +125,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextFormField(
+                  validator: (url){
+                    if(!url.contains('https://')){
+                      return 'Url Inválida';
+                    }
+                    return null;
+                  } ,
                   decoration: InputDecoration(labelText: 'Url da imagem'),
                   textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.url,
                   focusNode: _imageUrlFocus,
                   controller: _imageController,
+                  onSaved: (urlImage) => _formData['urlImage'] = urlImage ?? '',
                   onFieldSubmitted: (_)=> submitedForm(),
                 ),
                               ),
