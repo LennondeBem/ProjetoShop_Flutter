@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           title: 'Minha loja',
           theme: ThemeData(
       
-      primarySwatch: Colors.pink,
+      primarySwatch: Colors.purple,
       accentColor: Colors.deepOrange,
       
       visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -43,7 +43,7 @@ class AppDrawer extends StatelessWidget {
              )
              ),
            decoration: BoxDecoration(   
-                  color: Colors.pink,
+                  color: Theme.of(context).primaryColor,
                   ),
            ),
           Padding(
