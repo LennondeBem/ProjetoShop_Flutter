@@ -7,16 +7,11 @@ import 'package:shop/widgets/cart_item_widget.dart';
 class CartPage extends StatelessWidget {
 
 
-List<String> timeline= ['amarelo','amarelo', 'vermelho'];
+
 
   @override
   Widget build(BuildContext context) {
 
-    var amarelo = timeline.map((e) => e.indexOf('amarelo'));
-
-   
-
-    print(amarelo);
     
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
