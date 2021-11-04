@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/models/product_list.dart';
 import 'package:shop/widgets/drawer.dart';
 
 
@@ -44,7 +46,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
  
   void submitedForm(){
     final isValid =_formKey.currentState?.validate() ?? false;
-
     if(!isValid){
       return print('Formulário inválido');
     }
@@ -56,6 +57,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
       description: _formData['description'], 
       price: _formData['price'] as double, 
       imageUrl: _formData['urlImage']);
+
+     Provider.of<ProductList>(context, listen: false).addProduct(newProduct);
+     Navigator.of(context).pop();
 
     print(newProduct.name);
     print(newProduct.id);
@@ -115,6 +119,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.multiline,
             maxLines: 3,
+            validator: (description){
+              if(description.trim().isEmpty){
+                return 'Coloque uma Descrição';
+              }if(description.trim().length <= 3){
+                return 'Tamanho curto';
+              }
+              return null;
+            },
             focusNode: _descriptionFocus,
             onSaved: (description) => _formData['description'] = description ?? '',
           ),

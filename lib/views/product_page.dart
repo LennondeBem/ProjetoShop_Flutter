@@ -11,8 +11,9 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-   var products = Provider.of<ProductList>(context, listen: false);
-
+   var products = Provider.of<ProductList>(context);
+   
+   
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
@@ -31,7 +32,7 @@ class ProductPage extends StatelessWidget {
           itemCount: products.itemsCount,
           itemBuilder: (ctx, i)=> Column(
             children: [
-              ProductItem(product: products.items[i]),
+              ProductItem(product: products.items[i], ),
               Divider(),
             ],
           ),
