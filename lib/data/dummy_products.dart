@@ -3,11 +3,11 @@ import '../models/product.dart';
 List<Product> dummyProducts = [
     Product(
       id: 'p1',
-    name: 'Red Shirt',
-      description: 'A red shirt - it is pretty red!',
-      price: 29.99,
+    name: 'Camisa Fla',
+      description: 'Camisa Flamengo Oficial!',
+      price: 299.99,
       imageUrl:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
+          'https://flamengo.vteximg.com.br/arquivos/ids/162004-1000-1000/masc.jg1_1.jpg?v=637498846510930000',
     ),
     Product(
       id: 'p2',

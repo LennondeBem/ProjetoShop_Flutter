@@ -11,7 +11,7 @@ bool isFavorite;
 
 Product({
   @required this.name,
-  @required this.id,
+  this.id,
   @required this.description,
   @required this.price,
   @required this.imageUrl,

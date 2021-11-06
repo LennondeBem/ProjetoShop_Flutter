@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shop/data/dummy_products.dart';
 import 'package:shop/models/product.dart';
 
 class ProductList with ChangeNotifier{
+
+  final urlBase = 'https://shop-4769d-default-rtdb.firebaseio.com';
 
   List<Product> _items = dummyProducts;
   
@@ -16,12 +22,62 @@ class ProductList with ChangeNotifier{
     notifyListeners();
   }
 
+  void saveProduct(Map<String,Object> data){
+    bool hasId = data['id'] != null;
+
+    final product = Product(
+      name:data['name'], 
+      id: hasId ? data['id'] : Random().nextDouble().toString(), 
+      description:data['description'], 
+      price:data['price'] as double, 
+      imageUrl:data['urlImage']);
   
+      if(hasId){
+        updateProduct(product);
+      }else{
+        addProduct(product);
+      }
+
+
+  }
+
+  void updateProduct(Product product){
+    int index = _items.indexWhere((element) => element.id == product.id);
+    
+    if(index >= 0){
+      _items[index] = product;
+      notifyListeners();
+    }
+
+  }
 
   void addProduct(Product product){
-    _items.add(product);
-    notifyListeners();
+    http.post(
+      Uri.parse('$urlBase/products.json'),
+      body: jsonEncode({
+        "name" : product.name,
+        "description" : product.description,
+        "price" : product.price,
+        "imageUrl" : product.imageUrl,
+        "isFavorite" : product.isFavorite,
+      }
+      )
+    ).then((response){
+        final id = jsonDecode(response.body)['name'];
+       _items.add(Product(
+         name: product.name,
+          id: id,
+           description:product.description, 
+           price:product.price, 
+           imageUrl:product.imageUrl,
+           isFavorite: product.isFavorite,
+           ));
+       notifyListeners();
+    } );
+   
+   
   }
+  
 
 }
 

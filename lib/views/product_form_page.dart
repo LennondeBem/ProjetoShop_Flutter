@@ -36,6 +36,26 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    if(_formData.isEmpty){
+      final arg = ModalRoute.of(context)?.settings.arguments;
+      if(arg != null){
+        final product = arg as Product;
+        _formData['id'] = product.id;
+         _formData['name'] = product.name;
+          _formData['price'] = product.price;
+           _formData['description'] = product.description;
+            _formData['imageUrl'] = product.imageUrl;
+
+            _imageController.text = _formData['imageUrl']; 
+
+
+      }
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _priceFocus.dispose();
     _descriptionFocus.dispose();
@@ -51,21 +71,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
 
     _formKey.currentState?.save();
-    final newProduct = Product(
-      name: _formData['name'], 
-      id: Random().nextDouble().toString(), 
-      description: _formData['description'], 
-      price: _formData['price'] as double, 
-      imageUrl: _formData['urlImage']);
-
-     Provider.of<ProductList>(context, listen: false).addProduct(newProduct);
+     Provider.of<ProductList>(context, listen: false).saveProduct(_formData);
      Navigator.of(context).pop();
-
-    print(newProduct.name);
-    print(newProduct.id);
-    print(newProduct.description);
-    print(newProduct.price);
-    print(newProduct.imageUrl);
   }
 
   @override
@@ -89,6 +96,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: ListView(
         children: [
           TextFormField(
+            initialValue: _formData['name']?.toString(),
             validator: (name){
               if(name.trim().isEmpty){
                 return 'Coloque um nome';
@@ -105,6 +113,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             onSaved: (name) => _formData['name'] = name ?? '',
           ),
           TextFormField(
+            initialValue: _formData['price']?.toString(),
             decoration: InputDecoration(labelText: 'Preço'),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
@@ -115,6 +124,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             onSaved: (price) => _formData['price'] = double.parse(price ?? '0'),
           ),
            TextFormField(
+             initialValue: _formData['description']?.toString(),
             decoration: InputDecoration(labelText: 'Descrição'),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.multiline,
