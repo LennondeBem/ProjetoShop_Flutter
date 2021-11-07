@@ -53,7 +53,7 @@ class _ProductGridItemState extends State<ProductGridItem> {
                           icon: product.isFavorite ? Icon(Icons.favorite):Icon(Icons.favorite_border),
                            color: Theme.of(context).accentColor,
                            onPressed: (){
-                             product.toggleFavorite();
+                             product.toggleFavorite(product, context);
                              print(product.isFavorite);
                            },),
                       ),

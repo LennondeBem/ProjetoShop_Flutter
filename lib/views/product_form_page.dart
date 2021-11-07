@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_list.dart';
+import 'package:shop/utils/app_routes.dart';
 import 'package:shop/widgets/drawer.dart';
 
 
@@ -17,7 +18,9 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
- 
+
+
+ bool isLoading = false;
  final _priceFocus = FocusNode();
  final _descriptionFocus = FocusNode();
  final _imageUrlFocus = FocusNode();
@@ -64,15 +67,48 @@ class _ProductFormPageState extends State<ProductFormPage> {
     super.dispose();
   }
  
-  void submitedForm(){
+   Future<void> submitedForm() async {
     final isValid =_formKey.currentState?.validate() ?? false;
     if(!isValid){
       return print('Formulário inválido');
     }
-
     _formKey.currentState?.save();
-     Provider.of<ProductList>(context, listen: false).saveProduct(_formData);
-     Navigator.of(context).pop();
+    setState(() {
+                isLoading = true;
+              });
+     
+     try{
+       await Provider.of<ProductList>(context, listen: false).saveProduct(_formData);
+         setState(() {
+              isLoading = false;
+              });
+      Navigator.of(context).pop();    
+     }
+     catch (error){
+       print(error.toString());
+         showDialog(context: context,
+         builder: (context) => AlertDialog(
+           title: Text('Erro inesperado'),
+           content: Text('Desculpe-nos pelo transtorno, comunique este erro aos nossos desenvolvedores!'),
+           actions: [
+             TextButton(
+               onPressed: (){
+                //  setState(() {
+                //    isLoading = false;
+                //  });  Alternativa para setar o Loading pra falso, fora do 'finally'!
+                 Navigator.of(context).pop();
+               },
+              child: Text('Comunicar erro!'))
+           ],
+         )
+         );
+     } finally{
+      setState(() {
+                   isLoading = false;
+                 });
+     }
+     
+        
   }
 
   @override
@@ -89,7 +125,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         ],
         title: Text("Formulário")
       ),
-      body: Padding(
+      body: isLoading? Center(child: CircularProgressIndicator()): Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
           key:  _formKey,

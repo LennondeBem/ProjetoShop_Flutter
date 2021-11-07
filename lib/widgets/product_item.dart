@@ -31,8 +31,9 @@ class _ProductItemState extends State<ProductItem> {
       ),
       title: Text(widget.product.name),
       trailing: Container(
-        width: width*0.24,
-      child: Row(
+       
+        width: width*0.245,
+      child: Row(   
         children: [
           IconButton(
             icon: Icon(Icons.edit, color: Theme.of(context).primaryColor,),
@@ -43,7 +44,7 @@ class _ProductItemState extends State<ProductItem> {
              }
              ),
              IconButton(
-            icon: Icon(Icons.delete, color: Theme.of(context).errorColor,),
+            icon: Icon(Icons.delete, color: Theme.of(context).errorColor),
              onPressed: (){ 
                showDialog<bool>(
             context: context,  
