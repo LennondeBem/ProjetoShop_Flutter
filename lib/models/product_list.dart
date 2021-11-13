@@ -82,7 +82,7 @@ class ProductList with ChangeNotifier{
 
   }
 
-  Future<void> updateProduct(Product product)async{
+  Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((element) => element.id == product.id);
     
     if(index >= 0){

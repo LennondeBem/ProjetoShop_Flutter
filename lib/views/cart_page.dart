@@ -4,10 +4,14 @@ import 'package:shop/models/cart.dart';
 import 'package:shop/models/orders_item.dart';
 import 'package:shop/widgets/cart_item_widget.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
 
+  @override
+  _CartPageState createState() => _CartPageState();
+}
 
-
+class _CartPageState extends State<CartPage> {
+  var isloading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,7 @@ class CartPage extends StatelessWidget {
     final items = cart.items.values.toList();
 
     var order =  Provider.of<OrderItem>(context);
+    
 
 
     return Scaffold(
@@ -45,12 +50,18 @@ class CartPage extends StatelessWidget {
                  label: Text('R\$ ${cart.totalAmount.toStringAsFixed(2)}'),
                  backgroundColor: Theme.of(context).primaryColor),
                Spacer(),
-               TextButton(
+               isloading ? CircularProgressIndicator() : TextButton(
                  child: Text('COMPRAR'),
-                 onPressed: (){
-                  order.addOrder(cart);
-                  cart.clear();
-                 },)
+                 onPressed: cart.itemsCount == 0 ? null : () async {
+                  setState(() {
+                    isloading = true;
+                  });
+                  await order.addOrder(cart);
+                   cart.clear();
+                   setState(() {
+                    isloading = false;
+                  });
+                 })
                
                 ]
               ),

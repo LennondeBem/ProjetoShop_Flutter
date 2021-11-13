@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/orders_item.dart';
 import 'package:shop/models/product_list.dart';
+import 'package:shop/views/auth_page.dart';
 import 'package:shop/views/cart_page.dart';
 import 'package:shop/views/orders_page.dart';
 import 'package:shop/views/product_form_page.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           routes: {
+          AppRoutes.AUTH : (ctx) => AuthPage(),  
           AppRoutes.HOME : (ctx) => ProductOverviewPage(),
           AppRoutes.PRODUCT_DETAIL : (ctx) => ProductDetail(),
           AppRoutes.CART : (ctx) => CartPage(),
